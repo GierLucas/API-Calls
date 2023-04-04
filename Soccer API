@@ -1,5 +1,3 @@
-# file:  "Table test.py"
-
 import requests
 import json
 from tabulate import tabulate
@@ -13,13 +11,14 @@ response = requests.request("GET", url=endpoint, headers=headers).text
 dict_in_list = json.loads(response)
 
 
-
 def league_table():
 
     index = 0
-    keys = 0    
+    keys = 0
+    indx = 0    
+    top_line = ["", "     Club", "MP", "W", "D", "L", "GD", "Pts"]
+    main_list = [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
 
-    top_line = ["", "Club", "Played", "Wins", "Draws", "Losses", "Goal Diff", "Points"]
 
     while keys < len(dict_in_list):
 
@@ -32,67 +31,14 @@ def league_table():
         goal_diff = dict_in_list[index]["Goal Difference"]
         points = dict_in_list[index]["Points"]
 
-        #x = tabulate([[position, name, played, wins, draws, losses, goal_diff, points]], headers=top_line, tablefmt="fancy_grid")
-        #y = tabulate([[position, name, played, wins, draws, losses, goal_diff, points]], tablefmt="fancy_grid")
+        temp_list = [position, name, played, wins, draws, losses, goal_diff, points]
         
-        #if index <= 0:
-        #    print(x)
-        #else:
-        #    print(y)
-        L = [position, name, played, wins, losses, draws, goal_diff, points]
-        #z = L.extend(dict_in_list)
-        print(tabulate([L]))
-        #print(tabulate([[position, name, played, wins, draws, losses, goal_diff, points], [position, name, played, wins, draws, losses, goal_diff, points], [position, name, played, wins, draws, losses, goal_diff, points]], colalign=("right",)))
+        main_list[indx].extend(temp_list)
 
+        indx = indx + 1
         keys = keys + 1
         index = index + 1
+
+    print(tabulate(main_list, tablefmt="fancy_grid", headers=top_line, stralign="left", numalign="center"))
 
 league_table()
-
-#print(tabulate([[position, name, played, wins, draws, losses, goal_diff, points]], colalign=("right",)))
-
-
-
-
-
-
-
-
-#File: "Soccer api.py"
-
-import requests
-import json
-from tabulate import tabulate
-
-league = "eredivisie"
-
-endpoint = "https://football98.p.rapidapi.com/" + league + "/table/"
-headers = {"X-RapidAPI-Key": "24fe61fabdmsh9ad38564c00d7b2p11fa50jsn6e43a32d077a", "X-RapidAPI-Host": "football98.p.rapidapi.com"}
-
-response = requests.request("GET", url=endpoint, headers=headers).text
-dict_in_list = json.loads(response)
-
-def league_table():
-
-    index = 0
-    keys = 0    
-
-    while keys < len(dict_in_list):
-
-        position = dict_in_list[index]["Position"]
-        name = dict_in_list[index]["Name"]
-        played = dict_in_list[index]["Played"]
-        wins = dict_in_list[index]["Winned"]
-        losses = dict_in_list[index]["Loosed"]
-        draws = dict_in_list[index]["Tie"]
-        goal_diff = dict_in_list[index]["Goal Difference"]
-        points = dict_in_list[index]["Points"]
-
-        print(position + ": " + name + " || Played: " + played + " || Wins: " + wins + " || Losses: " + losses + " || Draws: " + draws + " || Goal difference: " + goal_diff + " || Points: " + points)
-        keys = keys + 1
-        index = index + 1
-#league_table()
-
-
-
-print(tabulate(dict_in_list, tablefmt='fancy_grid', showindex=range(1,19)))
