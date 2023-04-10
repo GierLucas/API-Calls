@@ -1,0 +1,45 @@
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+import requests
+import json
+import datetime
+
+endpoint = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart"
+paramaters = {"days": "7", "vs_currency": "usd", "interval": "daily"}
+
+response = requests.request("GET", url=endpoint, params=paramaters).text
+main_dict = json.loads(response)
+
+def btc_graph():
+
+    index = 0
+    keys = 0
+    unixts_list = []
+    btcprice_list = []
+
+    while keys < len(main_dict["prices"]):
+
+        btc_price = int(main_dict["prices"][index][1])
+
+        unix_ts = main_dict["prices"][index][0]
+        dt1 = datetime.datetime.fromtimestamp(unix_ts / 1000)
+        formatted_time = dt1.strftime('%d-%m-%Y %H:%M:%S')[:-3]
+
+        unixts_list.append(formatted_time)
+        btcprice_list.append(btc_price)
+
+        keys = keys + 1
+        index = index + 1
+
+    xpoints = np.array(unixts_list)
+    ypoints = np.array(btcprice_list)
+
+    plt.title("Bitcoin price in US Dollars")
+    plt.xlabel("Date and Time")
+    plt.ylabel("Price of 1 Bitcoin in USD")
+    plt.plot(xpoints, ypoints, "o:r")
+    plt.grid(axis = 'y')
+    plt.show()
+    
+btc_graph()
